@@ -91,7 +91,7 @@ dontkillme(void)
 static void
 
 
-writemessage(Display *dpy, Window win, int screen)
+writemessage(Display *dpy, Window win, int screen, char * message)
 {
 	int len, line_len, width, height, s_width, s_height, i, j, k, tab_replace, tab_size;
 	XGCValues gr_values;
@@ -101,23 +101,6 @@ writemessage(Display *dpy, Window win, int screen)
 	GC gc;
 	fontinfo = XLoadQueryFont(dpy, font_name);
     
-    srand(time(NULL)); 
-    int rn = rand() % 8;
-
-    char messages[8][79] = {
-        "I use arch btw.", 
-        "Suckless: Software that sucks less.",
-        "I bet you can't figure out how to unlock me :)",
-        "password or password1234 is a bad password!",
-        "Security through obsurity is not Security.",
-        "Han shot first!",
-        "Theres no language better than Holy C I think...",
-        "\"If it's been written in C/C++\n\nre-write it in rust!\"\n\n\t - Some rust programmer",
-    };
-
-    char * message = messages[rn];
-   
-
 	if (fontinfo == NULL) {
 		if (count_error == 0) {
 			fprintf(stderr, "slock: Unable to load font \"%s\"\n", font_name);
@@ -242,7 +225,7 @@ gethash(void)
 
 static void
 readpw(Display *dpy, struct xrandr *rr, struct lock **locks, int nscreens,
-       const char *hash)
+       const char *hash, char * msg)
 {
 	XRRScreenChangeNotifyEvent *rre;
 	char buf[32], passwd[256], *inputhash;
@@ -303,14 +286,16 @@ readpw(Display *dpy, struct xrandr *rr, struct lock **locks, int nscreens,
 				}
 				break;
 			}
-			color = len ? INPUT : ((failure || failonclear) ? FAILED : INIT);
+		     	
+            
+            color = len ? INPUT : ((failure || failonclear) ? FAILED : INIT);
 			if (running && oldc != color) {
 				for (screen = 0; screen < nscreens; screen++) {
 					XSetWindowBackground(dpy,
 					                     locks[screen]->win,
 					                     locks[screen]->colors[color]);
 					XClearWindow(dpy, locks[screen]->win);
-					writemessage(dpy, locks[screen]->win, screen);
+					writemessage(dpy, locks[screen]->win, screen, msg);
 				}
 				oldc = color;
 			}
@@ -443,7 +428,21 @@ main(int argc, char **argv) {
 	default:
 		usage();
 	} ARGEND
+    
+    srand(time(NULL));
+    int rn = rand() % 8;
+    char messages[8][80] = {
+        "I use arch btw.", 
+        "Suckless: Software that sucks less.",
+        "I bet you can't figure out how to unlock me :)",
+        "password or password1234 is a bad password!",
+        "Security through obsurity is not Security.",
+        "Han shot first!",
+        "Theres no language better than Holy C I think...",
+        "\"If it's been written in C/C++\n\nre-write it in rust!\"\n\n\t - Some rust programmer",
+    };
 
+    char * msg = messages[rn];
 	/* validate drop-user and -group */
 	errno = 0;
 	if (!(pwd = getpwnam(user)))
@@ -485,7 +484,7 @@ main(int argc, char **argv) {
 		die("slock: out of memory\n");
 	for (nlocks = 0, s = 0; s < nscreens; s++) {
 		if ((locks[s] = lockscreen(dpy, &rr, s)) != NULL) {
-			writemessage(dpy, locks[s]->win, s);
+			writemessage(dpy, locks[s]->win, s, msg);
 			nlocks++;
 		} else {
 			break;
@@ -512,7 +511,7 @@ main(int argc, char **argv) {
 	}
 
 	/* everything is now blank. Wait for the correct password */
-	readpw(dpy, &rr, locks, nscreens, hash);
+	readpw(dpy, &rr, locks, nscreens, hash, msg);
 
 	return 0;
 }
