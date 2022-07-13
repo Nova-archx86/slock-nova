@@ -431,17 +431,7 @@ main(int argc, char **argv) {
     
     srand(time(NULL));
     int rn = rand() % 8;
-    char messages[8][80] = {
-        "I use arch btw.", 
-        "Suckless: Software that sucks less.",
-        "I bet you can't figure out how to unlock me :)",
-        "password or password1234 is a bad password!",
-        "Security through obsurity is not Security.",
-        "Han shot first!",
-        "Theres no language better than Holy C I think...",
-        "\"If it's been written in C/C++\n\nre-write it in rust!\"\n\n\t - Some rust programmer",
-    };
-
+    
     char * msg = messages[rn];
 	/* validate drop-user and -group */
 	errno = 0;
