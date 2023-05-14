@@ -20,7 +20,7 @@ static const char messages[8][80] = {
         "Security through obsurity is not Security.",
         "Han shot first!",
         "Theres no language better than Holy C I think...",
-        "\"If it's been written in C/C++\n\nre-write it in rust!\"\n\n\t - Some rust programmer",
+        "\"Everything is open source if you can read assembly!\""
 };
 
 /* text color */
