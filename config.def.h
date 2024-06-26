@@ -19,12 +19,12 @@ static const char messages[8][80] = {
         "password or password1234 is a bad password!",
         "Security through obsurity is not Security.",
         "Han shot first!",
-        "Theres no language better than Holy C I think...",
+        "Theres no language better C",
         "\"Everything is open source if you can read assembly!\""
 };
 
 /* text color */
-static const char * text_color = "#ffffff";
+static const char * text_color = "#ADFF2F";
 
 /* text size (must be a valid size) */
 static const char * font_name = "-adobe-courier-bold-r-normal--34-240-100-100-m-200-iso8859-15";
